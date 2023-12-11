@@ -61,12 +61,13 @@ public class Main {
         System.out.println("this is SRTF:");
         controller.setProcessController(new SRTF());
         controller.perform(processes);
-
+        
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         System.out.println("this is SJF:");
         controller.setProcessController(new SJF());
         controller.perform(processes);
-        
+
+
     }
 }

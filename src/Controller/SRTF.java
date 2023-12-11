@@ -13,6 +13,7 @@ public class SRTF extends ProcessController {
     private int currentTime;
     private int totalTime = getTotalTime();
     private HashMap<String , Integer> processBurstTime = new HashMap<>();
+    private HashMap<String , Integer> endTime = new HashMap<>();
 
     @Override
     public void execute() {
@@ -22,6 +23,7 @@ public class SRTF extends ProcessController {
 
         for(Process process: logic) {
             processBurstTime.put(process.getName(), process.getBurstTime());
+            endTime.put(process.getName(), 0);
         }
 
 
@@ -38,6 +40,7 @@ public class SRTF extends ProcessController {
                 compare = runningProcess;
             }
 
+
             if (runningProcess != null) {
                 int updatedBurst = processBurstTime.get(runningProcess.getName());
                 updatedBurst--;
@@ -45,6 +48,7 @@ public class SRTF extends ProcessController {
                 currentTime++;
 
                 if (processBurstTime.get(runningProcess.getName()) == 0) { //no more burst time
+                    endTime.put(runningProcess.getName(),currentTime);
                     runningProcess = null;
                 }
             } else {
@@ -62,10 +66,30 @@ public class SRTF extends ProcessController {
             }
         }
 
+        System.out.println("process name     waiting time     turnaround time");
+        float avrWaiting = 0, avrTurn = 0;
         for(Process process : sortedProcesses)
         {
-            System.out.println(process.getName());
+            try {
+                System.out.println(process.getName() + "               " + (endTime.get(process.getName()) - process.getArrivalTime() - process.getBurstTime()) + "                " + (endTime.get(process.getName()) - process.getArrivalTime()));
+
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+
+                e.printStackTrace();
+            }
+
         }
+
+        for(Process process: processes) {
+            avrTurn += (endTime.get(process.getName()) - process.getArrivalTime());
+            avrWaiting += (endTime.get(process.getName()) - process.getArrivalTime() - process.getBurstTime());
+        }
+
+        System.out.println("this is waiting: " + avrWaiting);
+        System.out.println("this is waiting: " + avrTurn);
+        System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
+        System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
     }
 
     private Process getShortestProcess(Vector<Process> processes, int currentTime) {

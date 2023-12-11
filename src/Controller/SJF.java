@@ -51,7 +51,7 @@ public class SJF extends ProcessController {
             }
         }
 
-        int avrWaiting = 0, avrTurn = 0;
+        float avrWaiting = 0, avrTurn = 0;
         System.out.println("process name     waiting time     turnaround time");
         for(Process process: sortedProcesses) {
             try {
@@ -68,6 +68,6 @@ public class SJF extends ProcessController {
         }
 
         System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
-        System.out.println("this is the average turnaround time: " + (avrTurn/getTotalTime()));
+        System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
     }
 }
