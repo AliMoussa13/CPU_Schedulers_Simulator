@@ -2,7 +2,7 @@ import Controller.Controller;
 import Controller.SJF;
 import Controller.SRTF;
 import Model.Process;
-import Controller.RR;
+import Controller.Priority;
 
 import java.util.Vector;
 import java.util.Scanner;
@@ -50,10 +50,6 @@ public class Main {
 
         Controller controller = new Controller();
 
-       // System.out.println("this is SRTF:");
-       // controller.setProcessController(new SRTF());
-       // controller.perform(processes);
-
        // controller.setProcessController(new RR(2));
        // controller.perform(processes);
 
@@ -61,13 +57,17 @@ public class Main {
         System.out.println("this is SRTF:");
         controller.setProcessController(new SRTF());
         controller.perform(processes);
-        
+
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         System.out.println("this is SJF:");
         controller.setProcessController(new SJF());
         controller.perform(processes);
 
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
+        System.out.println("this is Priority:");
+        controller.setProcessController(new Priority());
+        controller.perform(processes);
     }
 }
