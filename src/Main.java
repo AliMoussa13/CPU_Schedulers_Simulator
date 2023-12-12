@@ -42,16 +42,7 @@ public class Main {
         }
         */
 
-        processes.add(new Process("p1",0,7,1));
-        processes.add(new Process("p2",2,4,1));
-        processes.add(new Process("p3",4,1,1));
-        processes.add(new Process("p4",5,4,1));
-        processes.add(new Process("p5",0,9,1));
-
         Controller controller = new Controller();
-
-       // controller.setProcessController(new RR(2));
-       // controller.perform(processes);
 
 
         System.out.println("this is SRTF:");
@@ -66,11 +57,11 @@ public class Main {
 
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        /*
         System.out.println("this is Priority:");
         controller.setProcessController(new Priority());
         controller.perform(processes);
 
-         */
+
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 }

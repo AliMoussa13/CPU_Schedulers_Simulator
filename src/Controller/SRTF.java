@@ -14,6 +14,8 @@ public class SRTF extends ProcessController {
     private int totalTime = getTotalTime();
     private HashMap<String , Integer> processBurstTime = new HashMap<>();
     private HashMap<String , Integer> endTime = new HashMap<>();
+    private HashMap<String, Integer> processAge = new HashMap<>();
+    private Vector<Process> Readyqueue = new Vector<>();
 
     @Override
     public void execute() {
@@ -24,6 +26,7 @@ public class SRTF extends ProcessController {
         for(Process process: logic) {
             processBurstTime.put(process.getName(), process.getBurstTime());
             endTime.put(process.getName(), 0);
+            processAge.put(process.getName(), process.getPriority());
         }
 
         totalTime = getTotalTime();
@@ -36,8 +39,17 @@ public class SRTF extends ProcessController {
             runningProcess = getShortestProcess(queue,currentTime);
             if(compare != runningProcess) {
                 compare = runningProcess;
+                Readyqueue.add(compare);
             }
 
+            for(Process process : Readyqueue)
+            {
+                if(processBurstTime.get(process.getName()) != 0 && process != runningProcess )
+                {
+                    int OldAge = processAge.get(process.getName());
+                    processAge.put(process.getName(),OldAge+1);
+                }
+            }
 
             if (runningProcess != null) {
                 int updatedBurst = processBurstTime.get(runningProcess.getName());
@@ -93,17 +105,21 @@ public class SRTF extends ProcessController {
         int shortestBurst = Integer.MAX_VALUE;
 
         for (Process process : processes) {
-
-            if(process.getArrivalTime() <= currentTime) {
-                if (processBurstTime.get(process.getName()) < shortestBurst) {
-                    if(processBurstTime.get(process.getName()) != 0) {
-                        shortest = process;
-                        shortestBurst = processBurstTime.get(process.getName());
+            // starvation
+            if (processBurstTime.get(process.getName()) != 0) {
+                if (processAge.get(process.getName()) > 100)
+                     return process;
+            }
+            if (process.getArrivalTime() <= currentTime) {
+                    if (processBurstTime.get(process.getName()) < shortestBurst) {
+                        if (processBurstTime.get(process.getName()) != 0) {
+                            shortest = process;
+                            shortestBurst = processBurstTime.get(process.getName());
+                        }
                     }
                 }
-            }
-        }
 
+        }
         return shortest;
     }
 }
