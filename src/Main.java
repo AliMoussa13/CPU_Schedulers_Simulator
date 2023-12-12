@@ -1,8 +1,10 @@
 import Controller.Controller;
 import Controller.SJF;
 import Controller.SRTF;
-import Model.Process;
 import Controller.Priority;
+import Controller.AG;
+import Model.Process;
+
 
 import java.util.Vector;
 import java.util.Scanner;
@@ -63,5 +65,8 @@ public class Main {
 
 
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("this is AG:");
+        controller.setProcessController(new AG(4));
+        controller.perform(processes);
     }
 }
