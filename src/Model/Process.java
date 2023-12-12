@@ -1,8 +1,11 @@
 package Model;
 
+import Controller.SRTF;
+
 public class Process {
     private String Name;
     // private String color; // for the bonus
+    private String Color;
     private int ArrivalTime;
     private int BurstTime;
     private int Priority;
@@ -11,13 +14,15 @@ public class Process {
 
     public Process() {
         Name = "";
+        Color = "";
         ArrivalTime = -1;
         BurstTime = -1;
         Priority = -1;
     }
 
-    public Process(String name, int arrivalTime, int burstTime, int priority) {
+    public Process(String name, String color, int arrivalTime, int burstTime, int priority) {
         Name = name;
+        Color = color;
         ArrivalTime = arrivalTime;
         BurstTime = burstTime;
         Priority = priority;
@@ -82,5 +87,9 @@ public class Process {
             return true;
         }
         return false;
+    }
+
+    public Object getColor() {
+        return Color;
     }
 }
