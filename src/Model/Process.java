@@ -4,7 +4,6 @@ import Controller.SRTF;
 
 public class Process {
     private String Name;
-    // private String color; // for the bonus
     private String Color;
     private int ArrivalTime;
     private int BurstTime;

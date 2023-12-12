@@ -44,15 +44,23 @@ public class AG extends ProcessController {
 
 
             if(compare != runningProcess) {
+                System.out.println("Process " + runningProcess.getName() + " is running at " + currentTime);
                 compare = runningProcess;
                 currentQuantum = QunatumTable.get(runningProcess.getName());
                 halfCurrentQuantum = getHalfQuantum(runningProcess);
 
-                currentTime += halfCurrentQuantum;
-                int updatedBurst = processBurstTime.get(runningProcess.getName());
-                updatedBurst -= halfCurrentQuantum;
-                processBurstTime.put(runningProcess.getName(),updatedBurst);
-                currentQuantum -= halfCurrentQuantum;
+                if(processBurstTime.get(runningProcess.getName()) >= halfCurrentQuantum) {
+                    currentTime += halfCurrentQuantum;
+                    int updatedBurst = processBurstTime.get(runningProcess.getName());
+                    updatedBurst -= halfCurrentQuantum;
+                    processBurstTime.put(runningProcess.getName(),updatedBurst);
+                    currentQuantum -= halfCurrentQuantum;
+                }
+                else {
+                    currentTime += processBurstTime.get(runningProcess.getName());
+                    processBurstTime.put(runningProcess.getName(),0);
+                }
+
             }
             runningProcess = getShortestProcess(logic,currentTime);
             if(compare == runningProcess) {
@@ -85,6 +93,9 @@ public class AG extends ProcessController {
             }
         }
 
+        for(Process process : sortedProcesses) {
+            System.out.println(process.getName() + "        " + AGFactor.get(process.getName()));
+        }
     }
 
     private static int getRandomFactor() {
