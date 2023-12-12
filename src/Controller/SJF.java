@@ -9,7 +9,7 @@ import java.util.Vector;
 public class SJF extends ProcessController {
     private Vector<Process> queue = new Vector<>();
     private Vector<Process> logic = new Vector<>();
-    private int currentTime;
+    private int currentTime = 0;
     private Process currentProcess = new Process();
 
 
@@ -18,8 +18,6 @@ public class SJF extends ProcessController {
         logic.addAll(processes);
         Collections.sort(logic, Comparator.comparingInt(Process::getArrivalTime));
         int checkerTime = 0;
-
-        currentTime = logic.get(0).getArrivalTime();
 
         while(sortedProcesses.size() < processes.size()) {
             int counter = 0;

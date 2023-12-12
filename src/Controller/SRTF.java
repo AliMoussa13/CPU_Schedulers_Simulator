@@ -10,7 +10,7 @@ import java.util.Vector;
 public class SRTF extends ProcessController {
     private Vector<Process> queue = new Vector<>();
     private Vector<Process> logic = new Vector<>();
-    private int currentTime;
+    private int currentTime = 0;
     private int totalTime = getTotalTime();
     private HashMap<String , Integer> processBurstTime = new HashMap<>();
     private HashMap<String , Integer> endTime = new HashMap<>();
@@ -26,8 +26,6 @@ public class SRTF extends ProcessController {
             endTime.put(process.getName(), 0);
         }
 
-
-        currentTime = logic.get(0).getArrivalTime();
         totalTime = getTotalTime();
         Process runningProcess = null;
 
@@ -86,8 +84,6 @@ public class SRTF extends ProcessController {
             avrWaiting += (endTime.get(process.getName()) - process.getArrivalTime() - process.getBurstTime());
         }
 
-        System.out.println("this is waiting: " + avrWaiting);
-        System.out.println("this is waiting: " + avrTurn);
         System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
         System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
     }

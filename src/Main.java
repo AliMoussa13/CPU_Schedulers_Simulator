@@ -66,8 +66,11 @@ public class Main {
 
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
+        /*
         System.out.println("this is Priority:");
         controller.setProcessController(new Priority());
         controller.perform(processes);
+
+         */
     }
 }
