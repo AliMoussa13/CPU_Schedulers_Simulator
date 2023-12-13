@@ -33,12 +33,23 @@ public class SRTF extends ProcessController {
         Process runningProcess = null;
 
         queue.addAll(logic);
+        int counter = 0;
 
         while (currentTime < totalTime) {
 
             runningProcess = getShortestProcess(queue,currentTime);
             if(compare != runningProcess) {
+                if(compare != null) {
+                    compare.addHistory(currentTime);
+                }
                 compare = runningProcess;
+                if(counter == 0) {
+                    compare.addHistory(currentTime);
+                    counter++;
+                }
+                else {
+                    compare.addHistory(currentTime);
+                }
                 Readyqueue.add(compare);
             }
 
@@ -75,6 +86,8 @@ public class SRTF extends ProcessController {
                 sortedProcesses.add(compare);
             }
         }
+        compare = sortedProcesses.get(sortedProcesses.size()-1);
+        compare.addHistory(totalTime);
 
         System.out.println("process name     waiting time     turnaround time");
         float avrWaiting = 0, avrTurn = 0;
@@ -98,12 +111,6 @@ public class SRTF extends ProcessController {
 
         System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
         System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
-
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        for(Process process : logic) {
-            for(int t : process.getTimeHistory())
-                System.out.println(process.getName() + "    " + t);
-        }
     }
 
     private Process getShortestProcess(Vector<Process> processes, int currentTime) {

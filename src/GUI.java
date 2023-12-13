@@ -77,7 +77,7 @@ public class GUI {
                 processes.add(new Process("p2",Color.GREEN,3,6,9));
                 processes.add(new Process("p3",Color.BLUE,4,10,3));
                 processes.add(new Process("p4",Color.YELLOW,29,4,8));
-                //processes.add(new Process("p5","Black",0,9,1));
+                processes.add(new Process("p5",Color.CYAN,0,9,1));
 
                 for (int i = 0; i < processes.size(); i++) {
                     Process process = processes.get(i);
