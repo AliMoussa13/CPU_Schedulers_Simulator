@@ -62,7 +62,7 @@ public class GUI {
         option = new JComboBox<>(new String[]{"SRTF", "SJF", "PRIORITY", "AG"});
         option.setBounds(745, 380, 85, 20);
 
-        computeBtn = new JButton("Compute");
+        computeBtn = new JButton("Calculate");
         computeBtn.setBounds(725, 420, 120, 25);
         computeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         computeBtn.addActionListener(new ActionListener() {
@@ -82,20 +82,28 @@ public class GUI {
 
                 switch (selected) {
                     case "SRTF":
+                        System.out.println("this is SRTF:");
                         controller.setProcessController(new SRTF());
                         controller.perform(processes);
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
                     case "SJF":
+                        System.out.println("this is SJF:");
                         controller.setProcessController(new SJF());
                         controller.perform(processes);
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
                     case "Priority":
+                        System.out.println("this is Priority:");
                         controller.setProcessController(new Priority());
                         controller.perform(processes);
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
                     case "AG":
+                        System.out.println("this is AG:");
                         controller.setProcessController(new AG(4));
                         controller.perform(processes);
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
                     default:
                         return;
