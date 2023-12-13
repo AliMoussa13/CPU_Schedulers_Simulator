@@ -25,6 +25,7 @@ public class AG extends ProcessController {
         Process compare = null;
         int currentQuantum = 0;
         int halfCurrentQuantum = 0;
+        queue.add(null);
 
         for(Process process: logic) {
             processBurstTime.put(process.getName(), process.getBurstTime());
@@ -39,16 +40,22 @@ public class AG extends ProcessController {
 
 
         while (currentTime < totalTime) {
-
+            // get smallest AGFactor in current time
             runningProcess = getShortestProcess(logic,currentTime);
 
-
+            // if the process changed
             if(compare != runningProcess) {
-                System.out.println("Process " + runningProcess.getName() + " is running at " + currentTime);
-                compare = runningProcess;
+                if(compare == queue.get(0) && compare != getShortestProcess(logic,currentTime) && compare != null && queue.get(0) != null)
+                {
+                    queue.remove(0);
+                    queue.add(compare);
+                }
+
+                System.out.println("Process " + runningProcess.getName() + " is running at " + currentTime + " with AGF " + AGFactor.get(runningProcess.getName()));
                 currentQuantum = QunatumTable.get(runningProcess.getName());
                 halfCurrentQuantum = getHalfQuantum(runningProcess);
 
+                // if the burst time is bigger than half quantum
                 if(processBurstTime.get(runningProcess.getName()) >= halfCurrentQuantum) {
                     currentTime += halfCurrentQuantum;
                     int updatedBurst = processBurstTime.get(runningProcess.getName());
@@ -61,25 +68,50 @@ public class AG extends ProcessController {
                     processBurstTime.put(runningProcess.getName(),0);
                 }
 
+                compare = runningProcess;
             }
-            runningProcess = getShortestProcess(logic,currentTime);
-            if(compare == runningProcess) {
-                if (runningProcess != null) {
+
+            // if it is the shortest AG then it will finish
+            if(runningProcess == getShortestProcess(logic,currentTime)) {
+                while (currentQuantum > 0 && processBurstTime.get(runningProcess.getName()) > 0 && runningProcess == getShortestProcess(logic,currentTime)) {
+                    currentQuantum--;
+                    currentTime++;
                     int updatedBurst = processBurstTime.get(runningProcess.getName());
                     updatedBurst--;
-                    processBurstTime.put(runningProcess.getName(),updatedBurst); // to minus the burst time by 1
-                    currentTime++;
-
-                    if (processBurstTime.get(runningProcess.getName()) == 0) { //no more burst time
-                        endTime.put(runningProcess.getName(),currentTime);
-                        runningProcess = null;
-                    }
-                } else {
-                    currentTime++;
+                    processBurstTime.put(runningProcess.getName(),updatedBurst);
                 }
+                updateQuantum(runningProcess,currentQuantum);
+
+                if(queue.get(0) != null)
+                {
+                    runningProcess = queue.get(0);
+                    System.out.println("Process " + runningProcess.getName() + " is running at " + currentTime + " with AGF " + AGFactor.get(runningProcess.getName()));
+                    currentQuantum = QunatumTable.get(runningProcess.getName());
+                    halfCurrentQuantum = getHalfQuantum(runningProcess);
+
+                    // if the burst time is bigger than half quantum
+                    if(processBurstTime.get(runningProcess.getName()) >= halfCurrentQuantum) {
+                        currentTime += halfCurrentQuantum;
+                        int updatedBurst = processBurstTime.get(runningProcess.getName());
+                        updatedBurst -= halfCurrentQuantum;
+                        processBurstTime.put(runningProcess.getName(),updatedBurst);
+                        currentQuantum -= halfCurrentQuantum;
+                    }
+                    else {
+                        currentTime += processBurstTime.get(runningProcess.getName());
+                        processBurstTime.put(runningProcess.getName(),0);
+                    }
+                    updateQuantum(runningProcess,currentQuantum);
+                    compare = runningProcess;
+                }
+
             }
             else {
-                updateQuantum(compare,currentQuantum);
+                if(queue.get(0) == null)
+                {
+                    queue.remove(0);
+                }
+                queue.add(runningProcess);
             }
 
             if(sortedProcesses.isEmpty())

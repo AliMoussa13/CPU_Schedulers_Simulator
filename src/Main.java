@@ -25,6 +25,7 @@ public class Main {
         // processes.add(new Process("p5","Black",0,9,1));
 
 
+        /*
         System.out.println("this is SRTF:");
         controller.setProcessController(new SRTF());
         controller.perform(processes);
@@ -42,7 +43,7 @@ public class Main {
         controller.perform(processes);
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-
+         */
         System.out.println("this is AG:");
         controller.setProcessController(new AG(4));
         controller.perform(processes);
