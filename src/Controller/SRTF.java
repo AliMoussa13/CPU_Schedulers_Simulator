@@ -109,8 +109,10 @@ public class SRTF extends ProcessController {
             avrWaiting += (endTime.get(process.getName()) - process.getArrivalTime() - process.getBurstTime());
         }
 
-        System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
-        System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
+        AverageWaitingTime = Double.valueOf (avrWaiting/getTotalNumber());
+        AverageTurnAroundTime = Double.valueOf((avrTurn/getTotalNumber()));
+        System.out.println("this is the average waiting time: " + AverageWaitingTime);
+        System.out.println("this is the average turnaround time: " + AverageTurnAroundTime);
     }
 
     private Process getShortestProcess(Vector<Process> processes, int currentTime) {

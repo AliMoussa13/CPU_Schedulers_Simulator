@@ -86,7 +86,7 @@ public class GUI {
                             i, // Process
                             process.getColor(), // Color
                             process.getName(), // NAME
-                            process.getName(), // PID
+                            process.getID(), // PID
                             process.getPriority() // Priority
                     });
                 }

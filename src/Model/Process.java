@@ -3,6 +3,7 @@ package Model;
 import Controller.SRTF;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.Vector;
 
 public class Process {
@@ -14,6 +15,8 @@ public class Process {
     private int StartingTime;
     private int endTime;
     private Vector<Integer> timeHistory = new Vector<>();
+    Random random = new Random();
+    int ID = random.nextInt(101) + 3500;
 
     public Process() {
         Name = "";
@@ -21,6 +24,7 @@ public class Process {
         ArrivalTime = -1;
         BurstTime = -1;
         Priority = -1;
+        ID = 0;
     }
 
     public Process(String name, Color color, int arrivalTime, int burstTime, int priority) {
@@ -29,6 +33,7 @@ public class Process {
         ArrivalTime = arrivalTime;
         BurstTime = burstTime;
         Priority = priority;
+        int ID = random.nextInt(101) + 3500;
     }
 
     public String getName() {
@@ -101,5 +106,9 @@ public class Process {
     }
     public Vector<Integer> getTimeHistory() {
         return timeHistory;
+    }
+
+    public int getID() {
+        return ID;
     }
 }

@@ -6,6 +6,8 @@ import java.util.Vector;
 public abstract class ProcessController {
     protected Vector<Process> processes = new Vector<>();
     protected Vector<Process> sortedProcesses = new Vector<>();
+    protected Double AverageWaitingTime = 0.00;
+    protected Double AverageTurnAroundTime = 0.00;
 
     public void setProcesses(Vector<Process> processes) {
         this.processes = processes;
