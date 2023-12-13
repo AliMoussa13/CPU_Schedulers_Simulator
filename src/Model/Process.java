@@ -2,9 +2,11 @@ package Model;
 
 import Controller.SRTF;
 
+import java.awt.*;
+
 public class Process {
     private String Name;
-    private String Color;
+    private Color Color;
     private int ArrivalTime;
     private int BurstTime;
     private int Priority;
@@ -13,13 +15,13 @@ public class Process {
 
     public Process() {
         Name = "";
-        Color = "";
+        Color = Color.BLACK;
         ArrivalTime = -1;
         BurstTime = -1;
         Priority = -1;
     }
 
-    public Process(String name, String color, int arrivalTime, int burstTime, int priority) {
+    public Process(String name, Color color, int arrivalTime, int burstTime, int priority) {
         Name = name;
         Color = color;
         ArrivalTime = arrivalTime;

@@ -71,11 +71,11 @@ public class GUI {
                 Controller controller = new Controller();
                 Vector<Process> processes = new Vector<>();
 
-                processes.add(new Process("p1","Black",0,17,4));
-                processes.add(new Process("p2","Black",3,6,9));
-                processes.add(new Process("p3","Black",4,10,3));
-                processes.add(new Process("p4","Black",29,4,8));
-                processes.add(new Process("p5","Black",0,9,1));
+                processes.add(new Process("p1",Color.YELLOW,0,17,4));
+                processes.add(new Process("p2",Color.RED,3,6,9));
+                processes.add(new Process("p3",Color.BLUE,4,10,3));
+                processes.add(new Process("p4",Color.BLACK,29,4,8));
+                //processes.add(new Process("p5","Black",0,9,1));
 
                 String selected = (String) option.getSelectedItem();
 
