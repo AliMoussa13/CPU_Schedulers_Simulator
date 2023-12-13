@@ -49,8 +49,6 @@ public class GUI {
 
         chartPanel = new ProcessBarChart();
         chartPanel.setBounds(25, 26, 600, 300);
-        // JScrollPane chartPane = new JScrollPane(chartPanel);
-        // chartPane.setBounds(25, 26, 600, 300);  // Adjusted the bounds to move the chart above the table
 
         wtLabel = new JLabel("Average Waiting Time:");
         wtLabel.setBounds(650, 300, 180, 25);
@@ -75,19 +73,18 @@ public class GUI {
                 Controller controller = new Controller();
                 Vector<Process> processes = new Vector<>();
 
-                processes.add(new Process("p1",Color.YELLOW,0,17,4));
-                processes.add(new Process("p2",Color.RED,3,6,9));
+                processes.add(new Process("p1",Color.RED,0,17,4));
+                processes.add(new Process("p2",Color.GREEN,3,6,9));
                 processes.add(new Process("p3",Color.BLUE,4,10,3));
-                processes.add(new Process("p4",Color.BLACK,29,4,8));
+                processes.add(new Process("p4",Color.YELLOW,29,4,8));
                 //processes.add(new Process("p5","Black",0,9,1));
 
                 for (int i = 0; i < processes.size(); i++) {
                     Process process = processes.get(i);
-                    Color color = i % 2 == 0 ? Color.RED : Color.GREEN;
 
                     model.addRow(new Object[]{
                             i, // Process
-                            color, // Color
+                            process.getColor(), // Color
                             process.getName(), // NAME
                             process.getName(), // PID
                             process.getPriority() // Priority
@@ -125,27 +122,15 @@ public class GUI {
                     default:
                         return;
                 }
+
                 chartPanel.setDataset(processes);
                 chartPanel.repaint();
-                /*
-                // Update the GUI with the results
-                for (int i = 0; i < processes.size(); i++) {
-                    Process process = processes.get(i);
-                    model.setValueAt(process.getName(), i, 0);
-                    model.setValueAt(process.getColor(), i, 1);
-                    model.setValueAt(Integer.toString(process.getArrivalTime()), i, 2);
-                    model.setValueAt(Integer.toString(process.getBurstTime()), i, 3);
-                    model.setValueAt(Integer.toString(process.getPriority()), i, 4);
-                }
-                 // update GUI with the results
-                for (int i = 0; i < processes.size(); i++) {
-                    Process process = processes.get(i);
-                    model.setValueAt(process.getWaitingTime(), i, 4);
-                    model.setValueAt(process.getTurnaroundTime(), i, 5);
-                }
 
-                wtResultLabel.setText(Double.toString(Process.getAverageWaitingTime(processes)));
-                tatResultLabel.setText(Double.toString(Process.getAverageTurnaroundTime(processes))); */
+                // Update average turnaround time:
+                // wtResultLabel.setText(Double.toString(averageWaitingTime));
+
+                // Update average turnaround time:
+                // tatResultLabel.setText(Double.toString(averageTurnaroundTime));
 
                 chartPanel.setDataset(processes);
             }
@@ -220,8 +205,6 @@ public class GUI {
                 boolean isSelected, boolean hasFocus,
                 int row, int column) {
             Color newColor = (Color)color;
-            /* setBackground(newColor); */
-
             ColorRectangle rectangle = new ColorRectangle(newColor);
 
             return rectangle;
@@ -231,6 +214,7 @@ public class GUI {
     class ProcessBarChart extends JPanel {
         JFreeChart chart;
         ChartPanel chartPanel;
+        XYIntervalSeriesCollection dataset = new XYIntervalSeriesCollection();
 
         /**
          * Constructs a new application frame.
@@ -258,7 +242,7 @@ public class GUI {
             timeAxis.setAutoRange(true);
 
             XYPlot plot = new XYPlot(
-                    new XYSeriesCollection(),
+                    dataset,
                     new SymbolAxis("", new String[]{}),
                     timeAxis,
                     xyRenderer
@@ -268,26 +252,11 @@ public class GUI {
             plot.setBackgroundPaint(Color.WHITE);
 
             chart = new JFreeChart(plot);
-
-            /* dataset = new DefaultCategoryDataset();
-            chart = ChartFactory.createBarChart(
-                    "Process Bar Chart",
-                    "Process",
-                    "Time",
-                    dataset,
-                    PlotOrientation.HORIZONTAL,
-                    false,
-                    true,
-                    false
-            );
-
-            final CategoryPlot plot = chart.getCategoryPlot();
-
-            plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT); */
         }
 
         public void setDataset(Vector<Process> processes) {
-            XYIntervalSeriesCollection dataset = new XYIntervalSeriesCollection();
+            dataset.removeAllSeries();
+
             XYIntervalSeries[] series = new XYIntervalSeries[processes.size()];
             String[] categories = new String[series.length];
 
@@ -297,27 +266,23 @@ public class GUI {
             for (int i = 0; i < series.length; i++) {
                 Process process = processes.get(i);
 
-                // renderer.setSeriesPaint(i, some color);
+                renderer.setSeriesPaint(i, process.getColor());
 
                 String seriesKey = String.format("Process %d", i);
 
                 categories[i] = seriesKey;
                 series[i] = new XYIntervalSeries(seriesKey);
 
-                int point0 = process.getArrivalTime();
-                int point1 = point0 + 5;
+                Vector<Integer> timeHistory = process.getTimeHistory();
 
-                int point2 = point1 + 2;
-                int point3 = point2 + 3;
-
-                series[i].add(i, i - 0.2, i + 0.2, point0, point0, point1);
-                series[i].add(i, i - 0.2, i + 0.2, point2, point2, point3);
+                for (int j = 0; j < timeHistory.size(); j += 2) {
+                    series[i].add(i, i - 0.2, i + 0.2, timeHistory.get(j), timeHistory.get(j), timeHistory.get(j + 1));
+                }
 
                 dataset.addSeries(series[i]);
             }
 
             plot.setDomainAxis(new SymbolAxis("", categories));
-            plot.setDataset(dataset);
         }
     }
 }
