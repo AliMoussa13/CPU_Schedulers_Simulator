@@ -45,7 +45,7 @@ public class GUI {
         table.setDefaultRenderer(Color.class, new ColorRenderer());
 
         tablePane = new JScrollPane(table);
-        tablePane.setBounds(650, 26, 300, 250);  // Adjusted the bounds to move the table below the chart
+        tablePane.setBounds(650, 26, 325, 250);  // Adjusted the bounds to move the table below the chart
 
         chartPanel = new ProcessBarChart();
         chartPanel.setBounds(25, 26, 600, 300);
@@ -55,9 +55,9 @@ public class GUI {
         tatLabel = new JLabel("Average Turn Around Time:");
         tatLabel.setBounds(650, 325, 180, 25);
         wtResultLabel = new JLabel();
-        wtResultLabel.setBounds(215, 425, 180, 25);
+        wtResultLabel.setBounds(850, 300, 180, 25);
         tatResultLabel = new JLabel();
-        tatResultLabel.setBounds(215, 450, 180, 25);
+        tatResultLabel.setBounds(850, 325, 180, 25);
 
         option = new JComboBox<>(new String[]{"SRTF", "SJF", "PRIORITY", "AG"});
         option.setBounds(745, 380, 85, 20);
@@ -72,12 +72,11 @@ public class GUI {
 
                 Controller controller = new Controller();
                 Vector<Process> processes = new Vector<>();
-
-                processes.add(new Process("p1",Color.RED,0,17,4));
-                processes.add(new Process("p2",Color.GREEN,3,6,9));
-                processes.add(new Process("p3",Color.BLUE,4,10,3));
-                processes.add(new Process("p4",Color.YELLOW,29,4,8));
-                processes.add(new Process("p5",Color.CYAN,0,9,1));
+                processes.add(new Process("p1",0,17,4));
+                processes.add(new Process("p2",3,6,9));
+                processes.add(new Process("p3",4,10,2));
+                processes.add(new Process("p4",29,4,8));
+                processes.add(new Process("p5",36,9,1));
 
                 for (int i = 0; i < processes.size(); i++) {
                     Process process = processes.get(i);
@@ -127,10 +126,9 @@ public class GUI {
                 chartPanel.repaint();
 
                 // Update average turnaround time:
-                // wtResultLabel.setText(Double.toString(averageWaitingTime));
-
+                wtResultLabel.setText(Double.toString(controller.getAverageWaitingTime()));
                 // Update average turnaround time:
-                // tatResultLabel.setText(Double.toString(averageTurnaroundTime));
+                tatResultLabel.setText(Double.toString(controller.getAverageTurnAroundTime()));
 
                 chartPanel.setDataset(processes);
             }
@@ -153,10 +151,6 @@ public class GUI {
         frame.setResizable(false);
         frame.add(mainPanel);
         frame.pack();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GUI());
     }
 
     class ProcessTableModel extends DefaultTableModel {

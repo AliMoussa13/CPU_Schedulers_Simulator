@@ -20,13 +20,20 @@ public class Process {
 
     public Process() {
         Name = "";
-        Color = Color.BLACK;
+        Color = getRandomColor();
         ArrivalTime = -1;
         BurstTime = -1;
         Priority = -1;
         ID = 0;
     }
-
+    public Process(String name, int arrivalTime, int burstTime, int priority) {
+        Name = name;
+        Color = getRandomColor();
+        ArrivalTime = arrivalTime;
+        BurstTime = burstTime;
+        Priority = priority;
+        int ID = random.nextInt(101) + 3500;
+    }
     public Process(String name, Color color, int arrivalTime, int burstTime, int priority) {
         Name = name;
         Color = color;
@@ -83,18 +90,11 @@ public class Process {
     public void setEndTime(int endTime) {
         this.endTime = endTime;
     }
-
-    public void executeOneUnit() {
-        if (BurstTime > 0) {
-            BurstTime--;
-        }
-    }
-
-    public boolean isFinished() {
-        if (BurstTime == 0) {
-            return true;
-        }
-        return false;
+    private Color getRandomColor() {
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        return new Color(red, green, blue);
     }
 
     public Color getColor() {

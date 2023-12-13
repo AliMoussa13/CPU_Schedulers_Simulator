@@ -11,7 +11,13 @@ public class Controller {
         this.processController = processController;
     }
 
+    public Double getAverageWaitingTime() {
+        return processController.getAverageWaitingTime();
+    }
 
+    public Double getAverageTurnAroundTime() {
+        return processController.getAverageTurnAroundTime();
+    }
     public void perform(Vector<Process> processes){
         processController.setProcesses(processes);
         processController.execute();
