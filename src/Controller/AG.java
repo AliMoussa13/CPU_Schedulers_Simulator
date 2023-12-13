@@ -66,6 +66,7 @@ public class AG extends ProcessController {
                     currentTime++;
                 }
                 updateQuantum(runningProcess,currentQuantum);
+                runningProcess.addHistory(currentTime);
                 if(currentQuantum == 0) {
                     if(queue.get(0) != null) {
                         if(queue.get(0) != runningProcess && processBurstTime.get(queue.get(0).getName()) != 0) {
@@ -77,6 +78,7 @@ public class AG extends ProcessController {
                             else {
                                 updateQuantum(runningProcess,currentQuantum);
                                 queue.add(runningProcess);
+                                runningProcess.addHistory(currentTime);
                             }
                         }
 
@@ -92,6 +94,7 @@ public class AG extends ProcessController {
             else {
                 updateQuantum(runningProcess,currentQuantum);
                 queue.add(runningProcess);
+                runningProcess.addHistory(currentTime);
             }
         }
 
@@ -180,6 +183,7 @@ public class AG extends ProcessController {
     }
 
     private void runHalfQuantum(Process runningProcess) {
+        runningProcess.addHistory(currentTime);
 
         if(sortedProcesses.lastElement() != runningProcess)
         {

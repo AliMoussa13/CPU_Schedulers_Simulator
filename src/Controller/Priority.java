@@ -41,6 +41,7 @@ public class Priority extends ProcessController {
             runningProcess = getHighestPriorityProcess(queue, currentTime);
             if (compare != runningProcess) {
                 compare = runningProcess;
+                compare.addHistory(currentTime);
                 Readyqueue.add(compare);
             }
 
@@ -68,10 +69,12 @@ public class Priority extends ProcessController {
             }
 
             if (sortedProcesses.isEmpty()) {
+                compare.addHistory(currentTime);
                 sortedProcesses.add(compare);
             }
 
             if (sortedProcesses.lastElement() != compare) {
+                compare.addHistory(currentTime);
                 sortedProcesses.add(compare);
             }
         }
@@ -97,6 +100,12 @@ public class Priority extends ProcessController {
 
         System.out.println("this is the average waiting time: " + (avrWaiting / getTotalNumber()));
         System.out.println("this is the average turnaround time: " + (avrTurn / getTotalNumber()));
+
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        for(Process process : sortedProcesses) {
+            for(int t : process.getTimeHistory())
+                System.out.println(process.getName() + "    " + t);
+        }
     }
 
     private Process getHighestPriorityProcess(Vector<Process> processes, int currentTime) {

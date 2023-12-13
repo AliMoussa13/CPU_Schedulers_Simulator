@@ -42,7 +42,9 @@ public class SJF extends ProcessController {
                 currentProcess = queue.get(0);
                 queue.remove(0);
                 currentProcess.setStartingTime(currentTime);
+                currentProcess.addHistory(currentTime);
                 currentTime += currentProcess.getBurstTime();
+                currentProcess.addHistory(currentTime);
                 currentProcess.setEndTime(currentTime);
 
                 sortedProcesses.add(currentProcess);

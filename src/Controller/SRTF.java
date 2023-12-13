@@ -98,6 +98,12 @@ public class SRTF extends ProcessController {
 
         System.out.println("this is the average waiting time: " + (avrWaiting/getTotalNumber()));
         System.out.println("this is the average turnaround time: " + (avrTurn/getTotalNumber()));
+
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        for(Process process : logic) {
+            for(int t : process.getTimeHistory())
+                System.out.println(process.getName() + "    " + t);
+        }
     }
 
     private Process getShortestProcess(Vector<Process> processes, int currentTime) {

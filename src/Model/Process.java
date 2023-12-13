@@ -3,6 +3,7 @@ package Model;
 import Controller.SRTF;
 
 import java.awt.*;
+import java.util.Vector;
 
 public class Process {
     private String Name;
@@ -12,6 +13,7 @@ public class Process {
     private int Priority;
     private int StartingTime;
     private int endTime;
+    private Vector<Integer> timeHistory = new Vector<>();
 
     public Process() {
         Name = "";
@@ -92,5 +94,12 @@ public class Process {
 
     public Object getColor() {
         return Color;
+    }
+
+    public void addHistory(int time) {
+        timeHistory.add(time);
+    }
+    public Vector<Integer> getTimeHistory() {
+        return timeHistory;
     }
 }
