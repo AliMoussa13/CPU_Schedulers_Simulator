@@ -92,7 +92,7 @@ public class Process {
         return false;
     }
 
-    public Object getColor() {
+    public Color getColor() {
         return Color;
     }
 
