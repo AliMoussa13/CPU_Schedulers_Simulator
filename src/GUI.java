@@ -1,28 +1,29 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import Controller.*;
 import Model.Process;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SymbolAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYBarPainter;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.data.xy.XYIntervalSeries;
+import org.jfree.data.xy.XYIntervalSeriesCollection;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class GUI {
     private JFrame frame;
     private JPanel mainPanel;
-    private CustomPanel chartPanel;
+    private ProcessBarChart chartPanel;
     private JScrollPane tablePane;
     private JTable table;
 
@@ -37,18 +38,19 @@ public class GUI {
 
     public GUI() {
         processes = new Vector<>();
-        model = new DefaultTableModel(new String[]{"Process", "COLOR" , "NAME", "PID", "Priority" }, 0);
+        model = new ProcessTableModel();
 
         table = new JTable(model);
         table.setFillsViewportHeight(true);
+        table.setDefaultRenderer(Color.class, new ColorRenderer());
+
         tablePane = new JScrollPane(table);
         tablePane.setBounds(650, 26, 300, 250);  // Adjusted the bounds to move the table below the chart
 
-        chartPanel = new CustomPanel();
-        chartPanel.setBackground(Color.WHITE);
-        chartPanel.setPreferredSize(new Dimension(700, 100));
-        JScrollPane chartPane = new JScrollPane(chartPanel);
-        chartPane.setBounds(25, 26, 600, 300);  // Adjusted the bounds to move the chart above the table
+        chartPanel = new ProcessBarChart();
+        chartPanel.setBounds(25, 26, 600, 300);
+        // JScrollPane chartPane = new JScrollPane(chartPanel);
+        // chartPane.setBounds(25, 26, 600, 300);  // Adjusted the bounds to move the chart above the table
 
         wtLabel = new JLabel("Average Waiting Time:");
         wtLabel.setBounds(650, 300, 180, 25);
@@ -68,6 +70,8 @@ public class GUI {
         computeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                model.setRowCount(0); // Remove all rows from the table
+
                 Controller controller = new Controller();
                 Vector<Process> processes = new Vector<>();
 
@@ -76,6 +80,19 @@ public class GUI {
                 processes.add(new Process("p3",Color.BLUE,4,10,3));
                 processes.add(new Process("p4",Color.BLACK,29,4,8));
                 //processes.add(new Process("p5","Black",0,9,1));
+
+                for (int i = 0; i < processes.size(); i++) {
+                    Process process = processes.get(i);
+                    Color color = i % 2 == 0 ? Color.RED : Color.GREEN;
+
+                    model.addRow(new Object[]{
+                            i, // Process
+                            color, // Color
+                            process.getName(), // NAME
+                            process.getName(), // PID
+                            process.getPriority() // Priority
+                    });
+                }
 
                 String selected = (String) option.getSelectedItem();
 
@@ -93,7 +110,7 @@ public class GUI {
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
-                    case "Priority":
+                    case "PRIORITY":
                         System.out.println("this is Priority:");
                         controller.setProcessController(new Priority());
                         controller.perform(processes);
@@ -108,6 +125,8 @@ public class GUI {
                     default:
                         return;
                 }
+                chartPanel.setDataset(processes);
+                chartPanel.repaint();
                 /*
                 // Update the GUI with the results
                 for (int i = 0; i < processes.size(); i++) {
@@ -126,15 +145,15 @@ public class GUI {
                 }
 
                 wtResultLabel.setText(Double.toString(Process.getAverageWaitingTime(processes)));
-                tatResultLabel.setText(Double.toString(Process.getAverageTurnaroundTime(processes)));
+                tatResultLabel.setText(Double.toString(Process.getAverageTurnaroundTime(processes))); */
 
-                chartPanel.setTimeline(processController.getSortedProcesses());*/
+                chartPanel.setDataset(processes);
             }
         });
 
         mainPanel = new JPanel(null);
         mainPanel.setPreferredSize(new Dimension(1000, 480));
-        mainPanel.add(chartPane);
+        mainPanel.add(chartPanel);
         mainPanel.add(tablePane);
         mainPanel.add(wtLabel);
         mainPanel.add(tatLabel);
@@ -155,41 +174,150 @@ public class GUI {
         SwingUtilities.invokeLater(() -> new GUI());
     }
 
-    class CustomPanel extends JPanel {
-        private Vector<Process> timeline;
+    class ProcessTableModel extends DefaultTableModel {
+        public ProcessTableModel() {
+            super(new String[]{"Process", "COLOR" , "NAME", "PID", "Priority" }, 0);
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return getValueAt(0, columnIndex).getClass();
+        }
+    }
+
+    class ColorRectangle extends JComponent {
+        Color color;
+        int width = 15;
+        int height = 15;
+
+        public ColorRectangle(Color color) {
+            this.color = color;
+
+            setToolTipText("RGB value: " + color.getRed() + ", "
+                    + color.getGreen() + ", "
+                    + color.getBlue());
+        }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            if (timeline != null) {
-                int width = 30;
+            int horizontalCenter = (this.getWidth() - width) / 2;
+            int verticalCenter = (this.getHeight() - height) / 2;
 
-                for (int i = 0; i < timeline.size(); i++) {
-                    Process process = timeline.get(i);
-                    int x = 30 * (i + 1);
-                    int y = 20;
+            g.setColor(color);
+            g.fillRect(horizontalCenter, verticalCenter, width, height);
+        }
+    }
 
-                    g.drawRect(x, y, 30, 30);
-                    g.setFont(new Font("Segoe UI", Font.BOLD, 13));
-                    g.drawString(process.getName(), x + 10, y + 20);
-                    g.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-                    g.drawString(Integer.toString(process.getStartingTime()), x - 5, y + 45);
-
-                    if (i == timeline.size() - 1) {
-                        g.drawString(Integer.toString(process.getEndTime()), x + 27, y + 45);
-                    }
-
-                    width += 30;
-                }
-
-                this.setPreferredSize(new Dimension(width, 75));
-            }
+    class ColorRenderer implements TableCellRenderer {
+        public ColorRenderer() {
+            // setOpaque(true);
         }
 
-        public void setTimeline(Vector<Process> timeline) {
-            this.timeline = timeline;
-            repaint();
+        public Component getTableCellRendererComponent(
+                JTable table, Object color,
+                boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            Color newColor = (Color)color;
+            /* setBackground(newColor); */
+
+            ColorRectangle rectangle = new ColorRectangle(newColor);
+
+            return rectangle;
+        }
+    }
+
+    class ProcessBarChart extends JPanel {
+        JFreeChart chart;
+        ChartPanel chartPanel;
+
+        /**
+         * Constructs a new application frame.
+         */
+        public ProcessBarChart() {
+            super();
+            createChart();
+
+            chartPanel = new ChartPanel(chart);
+            chartPanel.setBackground(Color.white);
+            chartPanel.setPreferredSize(new Dimension(600, 300));
+
+            add(chartPanel);
+        }
+
+        private void createChart() {
+            XYBarRenderer xyRenderer = new XYBarRenderer();
+
+            xyRenderer.setShadowVisible(false);
+            xyRenderer.setUseYInterval(true);
+            xyRenderer.setBarPainter(new StandardXYBarPainter());
+
+            NumberAxis timeAxis = new NumberAxis();
+
+            timeAxis.setAutoRange(true);
+
+            XYPlot plot = new XYPlot(
+                    new XYSeriesCollection(),
+                    new SymbolAxis("", new String[]{}),
+                    timeAxis,
+                    xyRenderer
+            );
+
+            plot.setOrientation(PlotOrientation.HORIZONTAL);
+            plot.setBackgroundPaint(Color.WHITE);
+
+            chart = new JFreeChart(plot);
+
+            /* dataset = new DefaultCategoryDataset();
+            chart = ChartFactory.createBarChart(
+                    "Process Bar Chart",
+                    "Process",
+                    "Time",
+                    dataset,
+                    PlotOrientation.HORIZONTAL,
+                    false,
+                    true,
+                    false
+            );
+
+            final CategoryPlot plot = chart.getCategoryPlot();
+
+            plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT); */
+        }
+
+        public void setDataset(Vector<Process> processes) {
+            XYIntervalSeriesCollection dataset = new XYIntervalSeriesCollection();
+            XYIntervalSeries[] series = new XYIntervalSeries[processes.size()];
+            String[] categories = new String[series.length];
+
+            XYPlot plot = (XYPlot) chart.getPlot();
+            XYBarRenderer renderer = (XYBarRenderer) plot.getRenderer();
+
+            for (int i = 0; i < series.length; i++) {
+                Process process = processes.get(i);
+
+                // renderer.setSeriesPaint(i, some color);
+
+                String seriesKey = String.format("Process %d", i);
+
+                categories[i] = seriesKey;
+                series[i] = new XYIntervalSeries(seriesKey);
+
+                int point0 = process.getArrivalTime();
+                int point1 = point0 + 5;
+
+                int point2 = point1 + 2;
+                int point3 = point2 + 3;
+
+                series[i].add(i, i - 0.2, i + 0.2, point0, point0, point1);
+                series[i].add(i, i - 0.2, i + 0.2, point2, point2, point3);
+
+                dataset.addSeries(series[i]);
+            }
+
+            plot.setDomainAxis(new SymbolAxis("", categories));
+            plot.setDataset(dataset);
         }
     }
 }
