@@ -111,4 +111,9 @@ public class Process {
     public int getID() {
         return ID;
     }
+    
+    public void removeLastElement(){
+        timeHistory.remove(timeHistory.size()-1);
+    }
+
 }
