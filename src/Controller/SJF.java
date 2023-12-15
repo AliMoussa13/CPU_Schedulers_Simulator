@@ -11,8 +11,12 @@ public class SJF extends ProcessController {
     private Vector<Process> logic = new Vector<>();
     private int currentTime = 0;
     private Process currentProcess = new Process();
+    private int ContextSwitch;
 
 
+    public SJF(int contextSwitch) {
+        this.ContextSwitch = contextSwitch;
+    }
 
     @Override
     public void execute() {
@@ -49,6 +53,7 @@ public class SJF extends ProcessController {
                 currentProcess.setEndTime(currentTime);
 
                 sortedProcesses.add(currentProcess);
+                currentTime += ContextSwitch;
             }
         }
 
@@ -56,9 +61,10 @@ public class SJF extends ProcessController {
         System.out.println("process name     waiting time     turnaround time");
         for(Process process: sortedProcesses) {
             try {
-                System.out.println(process.getName() + "               " + (process.getEndTime()-process.getArrivalTime()-process.getBurstTime()) + "                " + (process.getEndTime()-process.getArrivalTime()));
                 avrWaiting +=  (process.getEndTime()-process.getArrivalTime()-process.getBurstTime());
                 avrTurn += (process.getEndTime()-process.getArrivalTime());
+
+                System.out.println(process.getName() + "               " + avrWaiting + "                " + avrTurn);
 
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

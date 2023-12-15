@@ -102,7 +102,7 @@ public class GUI {
                         break;
                     case "SJF":
                         System.out.println("this is SJF:");
-                        controller.setProcessController(new SJF());
+                        controller.setProcessController(new SJF(2));
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
