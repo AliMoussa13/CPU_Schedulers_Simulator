@@ -120,6 +120,7 @@ public class AG extends ProcessController {
                 endTime.put(runningProcess.getName(),currentTime);
             }
             else {
+                updateQuantum(runningProcess,currentQuantum);
                 runningProcess.addHistory(currentTime);
             }
             if(!queue.isEmpty()) {
@@ -231,7 +232,7 @@ public class AG extends ProcessController {
         }
         QunatumTable.put(process.getName(), newQuantum);
 
-        System.out.println("Process " + process.getName() + " got new quantum " + newQuantum);
+        System.out.println(process.getName() + " got new quantum " + newQuantum);
     }
 
     private int getQuantumMean() {
@@ -257,7 +258,7 @@ public class AG extends ProcessController {
             sortedProcesses.add(runningProcess);
         }
 
-        System.out.println("Process " + runningProcess.getName() + " is running at " + currentTime + " with AGF " + AGFactor.get(runningProcess.getName()));
+        System.out.println(runningProcess.getName() + " is running at " + currentTime + " with AGF " + AGFactor.get(runningProcess.getName()));
 
         currentQuantum = QunatumTable.get(runningProcess.getName());
         halfCurrentQuantum = getHalfQuantum(runningProcess);
