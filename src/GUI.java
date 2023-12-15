@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 import java.util.Vector;
+import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -72,11 +74,89 @@ public class GUI {
 
                 Controller controller = new Controller();
                 Vector<Process> processes = new Vector<>();
+
+                /*
+                Scanner scanner = new Scanner(System.in);
+
+                System.out.println("Enter the number of processes");
+                int n = scanner.nextInt();
+
+                System.out.println("Enter the Quantum time");
+                int quantum = scanner.nextInt();
+
+                System.out.println("Enter the time for the Context switch");
+                int context = scanner.nextInt();
+
+                for(int i = 0;i < n;i++) {
+                    System.out.println("Enter the name of the process");
+                    String name = scanner.next();
+
+                    System.out.println("Enter the Burst time of the process");
+                    int burst = scanner.nextInt();
+
+                    System.out.println("Enter the Arrival time of process");
+                    int arrival = scanner.nextInt();
+
+                    System.out.println("Enter the Priority of process");
+                    int priority = scanner.nextInt();
+
+                    System.out.println("Enter the color for the process if the color is not registered a random color will be assigned");
+                    String color = scanner.next();
+                    color = color.toLowerCase();
+
+                    Color color1 = null;
+                    switch (color) {
+                        case "blue":{
+                            color1 = Color.BLUE;
+                            break;
+                        }
+                        case "red":{
+                            color1 = Color.RED;
+                            break;
+                        }
+                        case "black":{
+                            color1 = Color.BLACK;
+                            break;
+                        }
+                        case "white":{
+                            color1 = Color.WHITE;
+                            break;
+                        }
+                        case "yellow":{
+                            color1 = Color.YELLOW;
+                            break;
+                        }
+                        case "green":{
+                            color1 = Color.GREEN;
+                            break;
+                        }
+                        case "pink":{
+                            color1 = Color.PINK;
+                            break;
+                        }
+                        case "orange":{
+                            color1 = Color.ORANGE;
+                            break;
+                        }
+                    }
+
+                    if(color1 == null)
+                        processes.add(new Process(name,arrival,burst,priority));
+                    else
+                        processes.add(new Process(name,color1,arrival,burst,priority));
+
+                    // if you did this don't forget to add context to sjf and quantum to ag
+                }
+                */
+
+
+
                 processes.add(new Process("p1",0,17,4));
                 processes.add(new Process("p2",3,6,9));
                 processes.add(new Process("p3",4,10,2));
                 processes.add(new Process("p4",29,4,8));
                 processes.add(new Process("p5",36,9,1));
+
 
                 for (int i = 0; i < processes.size(); i++) {
                     Process process = processes.get(i);
@@ -102,7 +182,7 @@ public class GUI {
                         break;
                     case "SJF":
                         System.out.println("this is SJF:");
-                        controller.setProcessController(new SJF(2));
+                        controller.setProcessController(new SJF(2));// context
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
@@ -114,7 +194,7 @@ public class GUI {
                         break;
                     case "AG":
                         System.out.println("this is AG:");
-                        controller.setProcessController(new AG(4));
+                        controller.setProcessController(new AG(4));// quantum
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;

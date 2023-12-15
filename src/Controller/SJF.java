@@ -57,14 +57,17 @@ public class SJF extends ProcessController {
             }
         }
 
-        float avrWaiting = 0, avrTurn = 0;
+        float avrWaiting = 0, avrTurn = 0, waitingTime, turnAroundTime;
         System.out.println("process name     waiting time     turnaround time");
         for(Process process: sortedProcesses) {
             try {
-                avrWaiting +=  (process.getEndTime()-process.getArrivalTime()-process.getBurstTime());
-                avrTurn += (process.getEndTime()-process.getArrivalTime());
+                waitingTime = (process.getEndTime()-process.getArrivalTime()-process.getBurstTime());
+                turnAroundTime = (process.getEndTime()-process.getArrivalTime());
 
-                System.out.println(process.getName() + "               " + avrWaiting + "                " + avrTurn);
+                avrWaiting += waitingTime;
+                avrTurn += turnAroundTime;
+
+                System.out.println(process.getName() + "               " + waitingTime + "                " + turnAroundTime);
 
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

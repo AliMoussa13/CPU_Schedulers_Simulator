@@ -230,6 +230,8 @@ public class AG extends ProcessController {
             newQuantum = oldQuantum + state;
         }
         QunatumTable.put(process.getName(), newQuantum);
+
+        System.out.println("Process " + process.getName() + " got new quantum " + newQuantum);
     }
 
     private int getQuantumMean() {
