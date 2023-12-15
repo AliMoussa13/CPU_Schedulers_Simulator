@@ -110,7 +110,9 @@ public class SRTF extends ProcessController {
         }
 
         AverageWaitingTime = Double.valueOf (avrWaiting/getTotalNumber());
+        AverageWaitingTime = Math.round(AverageWaitingTime * 100.0) / 100.0;
         AverageTurnAroundTime = Double.valueOf((avrTurn/getTotalNumber()));
+        AverageTurnAroundTime = Math.round(AverageTurnAroundTime * 100.0) / 100.0;
         System.out.println("this is the average waiting time: " + AverageWaitingTime);
         System.out.println("this is the average turnaround time: " + AverageTurnAroundTime);
     }
