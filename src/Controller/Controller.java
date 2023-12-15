@@ -19,6 +19,10 @@ public class Controller {
         return processController.getAverageTurnAroundTime();
     }
     public void perform(Vector<Process> processes){
+        for (Process process: processes) {
+            process.getTimeHistory().clear();
+        }
+
         processController.setProcesses(processes);
         processController.execute();
     }

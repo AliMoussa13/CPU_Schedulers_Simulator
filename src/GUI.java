@@ -154,7 +154,6 @@ public class GUI {
 
 
                 chartPanel.setDataset(processes);
-                chartPanel.repaint();
 
                 // Update average waiting time:
                 wtResultLabel.setText(Double.toString(controller.getAverageWaitingTime()));
@@ -354,8 +353,6 @@ public class GUI {
             }
 
             plot.setDomainAxis(new SymbolAxis("", categories));
-            chart.fireChartChanged();
-            chartPanel.repaint();
         }
     }
 }
