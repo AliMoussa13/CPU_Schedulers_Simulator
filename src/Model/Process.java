@@ -116,4 +116,15 @@ public class Process {
         timeHistory.remove(timeHistory.size()-1);
     }
 
+    @Override
+    public String toString() {
+        return "Process{" +
+                "\n\tName='" + Name + '\'' +
+                "\n\tColor=" + Color +
+                "\n\tArrivalTime=" + ArrivalTime +
+                "\n\tBurstTime=" + BurstTime +
+                "\n\tPriority=" + Priority +
+                "\n\tID=" + ID +
+                "\n}";
+    }
 }

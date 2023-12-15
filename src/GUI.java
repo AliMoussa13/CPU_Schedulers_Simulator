@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.NumberFormatter;
 
 import Controller.*;
 import Model.Process;
@@ -31,7 +33,6 @@ public class GUI {
     private int numberofprocesses; // Number of processes
     private int context;
     private int quantum;
-    private boolean flag = true;
     private JButton computeBtn;
     private JLabel wtLabel;
     private JLabel wtResultLabel;
@@ -75,47 +76,49 @@ public class GUI {
         context = Integer.parseInt(JOptionPane.showInputDialog("Enter the time for the Context switch"));
         quantum = Integer.parseInt(JOptionPane.showInputDialog("Enter the Quantum time"));
 
+        for (int i = 0; i < numberofprocesses; i++) {
+            String name = "Process " + (i + 1); // Modify this line if you want to use a different naming convention
+            ProcessInputDialog dialogPanel = new ProcessInputDialog(name);
+
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    dialogPanel,
+                    String.format("%s Details", name),
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            Process process = new Process(
+                    dialogPanel.getProcessName(),
+                    dialogPanel.getArrivalTime(),
+                    dialogPanel.getBurstTime(),
+                    dialogPanel.getPriority()
+            );
+
+            processes.add(process);
+            model.addRow(new Object[]{
+                    i, // Process
+                    process.getColor(), // Color
+                    process.getName(), // NAME
+                    process.getID(), // PID
+                    process.getPriority() // Priority
+            });
+        }
+
+        /*
+        processes.add(new Process("p1",0,17,4));
+        processes.add(new Process("p2",3,6,9));
+        processes.add(new Process("p3",4,10,2));
+        processes.add(new Process("p4",29,4,8));
+        processes.add(new Process("p5",36,9,1));
+        */
 
         computeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.setRowCount(0); // Remove all rows from the table
-
-
-/*
-                    Vector<Process> processes = new Vector<>();
-                    processes.add(new Process("p1",0,17,4));
-                    processes.add(new Process("p2",3,6,9));
-                    processes.add(new Process("p3",4,10,2));
-                    processes.add(new Process("p4",29,4,8));
-                    processes.add(new Process("p5",36,9,1));
-
-*/
-                Vector<Process> processes = new Vector<>();
-                if(flag) {
-
-                    for (int i = 0; i < numberofprocesses; i++) {
-                        String name = "Process " + (i + 1); // Modify this line if you want to use a different naming convention
-                        int burst = Integer.parseInt(JOptionPane.showInputDialog("Enter the Burst time of the process for " + name));
-                        int arrival = Integer.parseInt(JOptionPane.showInputDialog("Enter the Arrival time of process for " + name));
-                        int priority = Integer.parseInt(JOptionPane.showInputDialog("Enter the Priority of process for " + name));
-                        processes.add(new Process(name, arrival, burst, priority));
-                    }
-                    flag = false;
-                }
-
-
-                for (int i = 0; i < numberofprocesses; i++) {
-                    Process process = processes.get(i);
-
-                    model.addRow(new Object[]{
-                            i, // Process
-                            process.getColor(), // Color
-                            process.getName(), // NAME
-                            process.getID(), // PID
-                            process.getPriority() // Priority
-                    });
-                }
                 String selected = (String) option.getSelectedItem();
 
                 Controller controller = new Controller();
@@ -153,13 +156,10 @@ public class GUI {
                 chartPanel.setDataset(processes);
                 chartPanel.repaint();
 
-                // Update average turnaround time:
+                // Update average waiting time:
                 wtResultLabel.setText(Double.toString(controller.getAverageWaitingTime()));
                 // Update average turnaround time:
                 tatResultLabel.setText(Double.toString(controller.getAverageTurnAroundTime()));
-
-                chartPanel.setDataset(processes);
-
             }
         });
 
@@ -180,6 +180,54 @@ public class GUI {
         frame.setResizable(false);
         frame.add(mainPanel);
         frame.pack();
+    }
+
+    class ProcessInputDialog extends JPanel {
+        private JTextField nameField;
+        private JTextField arrivalTimeField;
+        private JTextField burstTimeField;
+        private JTextField priorityField;
+
+        public ProcessInputDialog(String defaultName) {
+            super();
+
+            nameField = new JTextField();
+            nameField.setText(defaultName);
+
+            arrivalTimeField = new JTextField();
+            burstTimeField = new JTextField();
+            priorityField = new JTextField();
+
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+            add(new JLabel("Enter the process' name"));
+            add(nameField);
+
+            add(new JLabel("Enter the arrival time"));
+            add(arrivalTimeField);
+
+            add(new JLabel("Enter the burst time"));
+            add(burstTimeField);
+
+            add(new JLabel("Enter the priority"));
+            add(priorityField);
+        }
+
+        public String getProcessName() {
+            return this.nameField.getText();
+        }
+
+        public int getArrivalTime() {
+            return Integer.parseInt(arrivalTimeField.getText());
+        }
+
+        public int getBurstTime() {
+            return Integer.parseInt(burstTimeField.getText());
+        }
+
+        public int getPriority() {
+            return Integer.parseInt(priorityField.getText());
+        }
     }
 
     class ProcessTableModel extends DefaultTableModel {
