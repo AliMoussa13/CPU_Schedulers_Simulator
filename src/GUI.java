@@ -138,6 +138,8 @@ public class GUI {
                             color1 = Color.ORANGE;
                             break;
                         }
+                        default:
+                            color1 = null;
                     }
 
                     if(color1 == null)
