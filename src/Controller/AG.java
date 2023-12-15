@@ -148,7 +148,7 @@ public class AG extends ProcessController {
         }
 
 
-
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("process name     waiting time     turnaround time");
         float avrWaiting = 0, avrTurn = 0;
         for(Process process : sortedProcesses)

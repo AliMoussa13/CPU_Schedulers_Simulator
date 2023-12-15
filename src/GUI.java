@@ -28,7 +28,10 @@ public class GUI {
     private ProcessBarChart chartPanel;
     private JScrollPane tablePane;
     private JTable table;
-
+    private int numberofprocesses; // Number of processes
+    private int context;
+    private int quantum;
+    private boolean flag = true;
     private JButton computeBtn;
     private JLabel wtLabel;
     private JLabel wtResultLabel;
@@ -67,100 +70,42 @@ public class GUI {
         computeBtn = new JButton("Calculate");
         computeBtn.setBounds(725, 420, 120, 25);
         computeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+
+        numberofprocesses = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of processes"));
+        context = Integer.parseInt(JOptionPane.showInputDialog("Enter the time for the Context switch"));
+        quantum = Integer.parseInt(JOptionPane.showInputDialog("Enter the Quantum time"));
+
+
         computeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.setRowCount(0); // Remove all rows from the table
 
-                Controller controller = new Controller();
+
+/*
+                    Vector<Process> processes = new Vector<>();
+                    processes.add(new Process("p1",0,17,4));
+                    processes.add(new Process("p2",3,6,9));
+                    processes.add(new Process("p3",4,10,2));
+                    processes.add(new Process("p4",29,4,8));
+                    processes.add(new Process("p5",36,9,1));
+
+*/
                 Vector<Process> processes = new Vector<>();
+                if(flag) {
 
-                /*
-                Scanner scanner = new Scanner(System.in);
-
-                System.out.println("Enter the number of processes");
-                int n = scanner.nextInt();
-
-                System.out.println("Enter the Quantum time");
-                int quantum = scanner.nextInt();
-
-                System.out.println("Enter the time for the Context switch");
-                int context = scanner.nextInt();
-
-                for(int i = 0;i < n;i++) {
-                    System.out.println("Enter the name of the process");
-                    String name = scanner.next();
-
-                    System.out.println("Enter the Burst time of the process");
-                    int burst = scanner.nextInt();
-
-                    System.out.println("Enter the Arrival time of process");
-                    int arrival = scanner.nextInt();
-
-                    System.out.println("Enter the Priority of process");
-                    int priority = scanner.nextInt();
-
-                    System.out.println("Enter the color for the process if the color is not registered a random color will be assigned");
-                    String color = scanner.next();
-                    color = color.toLowerCase();
-
-                    Color color1 = null;
-                    switch (color) {
-                        case "blue":{
-                            color1 = Color.BLUE;
-                            break;
-                        }
-                        case "red":{
-                            color1 = Color.RED;
-                            break;
-                        }
-                        case "black":{
-                            color1 = Color.BLACK;
-                            break;
-                        }
-                        case "white":{
-                            color1 = Color.WHITE;
-                            break;
-                        }
-                        case "yellow":{
-                            color1 = Color.YELLOW;
-                            break;
-                        }
-                        case "green":{
-                            color1 = Color.GREEN;
-                            break;
-                        }
-                        case "pink":{
-                            color1 = Color.PINK;
-                            break;
-                        }
-                        case "orange":{
-                            color1 = Color.ORANGE;
-                            break;
-                        }
-                        default:
-                            color1 = null;
+                    for (int i = 0; i < numberofprocesses; i++) {
+                        String name = "Process " + (i + 1); // Modify this line if you want to use a different naming convention
+                        int burst = Integer.parseInt(JOptionPane.showInputDialog("Enter the Burst time of the process for " + name));
+                        int arrival = Integer.parseInt(JOptionPane.showInputDialog("Enter the Arrival time of process for " + name));
+                        int priority = Integer.parseInt(JOptionPane.showInputDialog("Enter the Priority of process for " + name));
+                        processes.add(new Process(name, arrival, burst, priority));
                     }
-
-                    if(color1 == null)
-                        processes.add(new Process(name,arrival,burst,priority));
-                    else
-                        processes.add(new Process(name,color1,arrival,burst,priority));
-
-                    // if you did this don't forget to add context to sjf and quantum to ag
+                    flag = false;
                 }
-                */
 
 
-
-                processes.add(new Process("p1",0,17,4));
-                processes.add(new Process("p2",3,6,9));
-                processes.add(new Process("p3",4,10,2));
-                processes.add(new Process("p4",29,4,8));
-                processes.add(new Process("p5",36,9,1));
-
-
-                for (int i = 0; i < processes.size(); i++) {
+                for (int i = 0; i < numberofprocesses; i++) {
                     Process process = processes.get(i);
 
                     model.addRow(new Object[]{
@@ -171,9 +116,9 @@ public class GUI {
                             process.getPriority() // Priority
                     });
                 }
-
                 String selected = (String) option.getSelectedItem();
 
+                Controller controller = new Controller();
 
                 switch (selected) {
                     case "SRTF":
@@ -184,7 +129,7 @@ public class GUI {
                         break;
                     case "SJF":
                         System.out.println("this is SJF:");
-                        controller.setProcessController(new SJF(2));// context
+                        controller.setProcessController(new SJF(context)); // context
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
@@ -196,13 +141,14 @@ public class GUI {
                         break;
                     case "AG":
                         System.out.println("this is AG:");
-                        controller.setProcessController(new AG(4));// quantum
+                        controller.setProcessController(new AG(quantum)); // quantum
                         controller.perform(processes);
                         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         break;
                     default:
                         return;
                 }
+
 
                 chartPanel.setDataset(processes);
                 chartPanel.repaint();
@@ -213,6 +159,7 @@ public class GUI {
                 tatResultLabel.setText(Double.toString(controller.getAverageTurnAroundTime()));
 
                 chartPanel.setDataset(processes);
+
             }
         });
 
@@ -359,6 +306,8 @@ public class GUI {
             }
 
             plot.setDomainAxis(new SymbolAxis("", categories));
+            chart.fireChartChanged();
+            chartPanel.repaint();
         }
     }
 }
